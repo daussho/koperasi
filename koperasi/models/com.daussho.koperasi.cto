@@ -36,6 +36,6 @@ transaction AccountTransaction {
   --> Account account
   o Long txId
   o DateTime timeStamp
-  o Long amount
+  o Double amount
   o String type
 }

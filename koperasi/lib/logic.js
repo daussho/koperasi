@@ -18,26 +18,12 @@
  */
 
 /**
- * Sample transaction
- * @param {com.daussho.koperasi.SampleTransaction} sampleTransaction
+ * Account transaction
+ * @param {com.daussho.koperasi.AccountTransaction} accountTransaction
  * @transaction
  */
-async function sampleTransaction(tx) {
-    // Save the old value of the asset.
-    const oldValue = tx.asset.value;
-
-    // Update the asset with the new value.
-    tx.asset.value = tx.newValue;
-
-    // Get the asset registry for the asset.
-    const assetRegistry = await getAssetRegistry('com.daussho.koperasi.SampleAsset');
-    // Update the asset in the asset registry.
-    await assetRegistry.update(tx.asset);
-
-    // Emit an event for the modified asset.
-    let event = getFactory().newEvent('com.daussho.koperasi', 'SampleEvent');
-    event.asset = tx.asset;
-    event.oldValue = oldValue;
-    event.newValue = tx.newValue;
-    emit(event);
+async function savingTransaction(tx) {
+    tx.account.balance = tx.account.balance + tx.amount;
+    let assetRegistry = await getAssetRegistry('com.daussho.koperasi.Account');
+    await assetRegistry.update(tx.account);
 }

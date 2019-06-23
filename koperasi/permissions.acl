@@ -17,7 +17,7 @@
  */
 rule EverybodyCanReadEverything {
     description: "Allow all participants read access to all resources"
-    participant: "com.daussho.koperasi.SampleParticipant"
+    participant: "com.daussho.koperasi.User"
     operation: READ
     resource: "com.daussho.koperasi.*"
     action: ALLOW
@@ -25,17 +25,17 @@ rule EverybodyCanReadEverything {
 
 rule EverybodyCanSubmitTransactions {
     description: "Allow all participants to submit transactions"
-    participant: "com.daussho.koperasi.SampleParticipant"
+    participant: "com.daussho.koperasi.User"
     operation: CREATE
-    resource: "com.daussho.koperasi.SampleTransaction"
+    resource: "com.daussho.koperasi.AccountTransaction"
     action: ALLOW
 }
 
 rule OwnerHasFullAccessToTheirAssets {
     description: "Allow all participants full access to their assets"
-    participant(p): "com.daussho.koperasi.SampleParticipant"
+    participant(p): "com.daussho.koperasi.User"
     operation: ALL
-    resource(r): "com.daussho.koperasi.SampleAsset"
+    resource(r): "com.daussho.koperasi.Account"
     condition: (r.owner.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }
