@@ -13,30 +13,29 @@
  */
 
 /**
- * Write your model definitions here
+ * Model for blockchain based koperasi
  */
 
 namespace com.daussho.koperasi
 
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
+participant User identified by userId {
+  o String userId
+  o String name
+  o String address
+  o String type
 }
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
+asset Account identified by accountId {
+  o String accountId
+  --> User owner
+  o Double balance
+  o String type
 }
 
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
-}
-
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
+transaction AccountTransaction {
+  --> Account account
+  o Long txId
+  o DateTime timeStamp
+  o Long amount
+  o String type
 }
