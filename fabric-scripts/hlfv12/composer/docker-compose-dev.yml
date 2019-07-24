@@ -9,7 +9,7 @@ services:
 
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/19ab65abbb04807dad12e4c0a9aaa6649e70868e3abd0217a322d89e47e1a6ae_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/53eff38ec1dd54a8cf63819b7edcfc41978ffc4147b61d2e5dc6b722e6840bbd_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca.org1.example.com
@@ -56,6 +56,90 @@ services:
         - /var/run/:/host/var/run/
         - ./:/etc/hyperledger/configtx
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
+    depends_on:
+      - orderer.example.com
+      - couchdb
+
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    image: hyperledger/fabric-peer:1.2.1
+    environment:
+      - CORE_LOGGING_LEVEL=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.org1.example.com
+      - CORE_PEER_ADDRESS=peer1.org1.example.com:7151
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7151:7151
+      - 7153:7153
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
+    depends_on:
+      - orderer.example.com
+      - couchdb
+  
+  peer2.org1.example.com:
+    container_name: peer2.org1.example.com
+    image: hyperledger/fabric-peer:1.2.1
+    environment:
+      - CORE_LOGGING_LEVEL=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer2.org1.example.com
+      - CORE_PEER_ADDRESS=peer2.org1.example.com:7251
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7251:7251
+      - 7253:7253
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
+    depends_on:
+      - orderer.example.com
+      - couchdb
+  
+  peer3.org1.example.com:
+    container_name: peer3.org1.example.com
+    image: hyperledger/fabric-peer:1.2.1
+    environment:
+      - CORE_LOGGING_LEVEL=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer3.org1.example.com
+      - CORE_PEER_ADDRESS=peer3.org1.example.com:7351
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7351:7351
+      - 7353:7353
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer3.org1.example.com/msp:/etc/hyperledger/peer/msp
         - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
     depends_on:
       - orderer.example.com
