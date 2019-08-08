@@ -1,0 +1,40 @@
+
+# Create new config
+
+    cd "$(dirname "$0")"
+	cryptogen generate --config=./crypto-config.yaml
+	export FABRIC_CFG_PATH=$PWD
+	configtxgen -profile ComposerOrdererGenesis -outputBlock ./composer-genesis.block
+	configtxgen -profile ComposerChannel -outputCreateChannelTx ./composer-channel.tx -channelID composerchannel
+
+# Start fabric
+	sudo FABRIC_VERSION="hlfv12" ./startFabric.sh 
+
+> Optional
+
+	FABRIC_VERSION="hlfv12" ./createPeerAdminCard.sh
+
+# Generate a business network archive
+	composer archive create -t dir -n .
+
+# Deploying the business network
+	composer network install --card PeerAdmin@hlfv1 --archiveFile  koperasi@0.1.1.bna
+	composer network start --networkName koperasi --networkVersion 0.1.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+> Optional
+
+	composer card import --file networkadmin.card
+
+# Testing network
+	composer network ping --card admin@koperasi
+
+# Generating a REST server
+	composer-rest-server
+
+- Enter admin@koperasi as the card name.
+- Select never use namespaces when asked whether to use namespaces in the generated API.
+- Select No when asked whether to secure the generated API.
+- Select Yes when asked whether to enable event publication.
+- Select No when asked whether to enable TLS security.
+
+# Stop fabric
+	sudo FABRIC_VERSION="hlfv12" ./stopFabric.sh
