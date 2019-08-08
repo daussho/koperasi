@@ -53,3 +53,9 @@ transaction CreateNewMember {
   o String name
   o String address
 }
+
+transaction UpdateMemberData {
+  --> User user
+  o String name
+  o String address
+}

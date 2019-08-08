@@ -4,25 +4,6 @@
  */
 
 /**
- * Create a demo user account
- * @param {com.daussho.koperasi.CreateDemoUser} createDemoUser
- * @transaction
- */
-
-function createDemoUser(demoUser) {
-
-    newUser = {
-        "$class": "com.daussho.koperasi.CreateNewMember",
-        "userId": "0",
-        "name": "Demo Member",
-        "address": "Jl. Ganesha No.10, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132",
-        "timestamp": demoUser.timestamp
-    };
-
-    return createNewMember(newUser);
-}
-
-/**
  * Create a new user and account
  * @param {com.daussho.koperasi.CreateNewMember} createNewMember
  * @transaction
@@ -69,6 +50,25 @@ function createNewMember(newUser){
         .then(function(accountRegistry){
             return accountRegistry.addAll([account1, account2]);
         });
+}
+
+/**
+ * Create a demo user account
+ * @param {com.daussho.koperasi.CreateDemoUser} createDemoUser
+ * @transaction
+ */
+
+function createDemoUser(demoUser) {
+
+    newUser = {
+        "$class": "com.daussho.koperasi.CreateNewMember",
+        "userId": "0",
+        "name": "Demo Member",
+        "address": "Jl. Ganesha No.10, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132",
+        "timestamp": demoUser.timestamp
+    };
+
+    return createNewMember(newUser);
 }
 
 /**
@@ -123,5 +123,26 @@ function accountTransaction(tx){
     return getAssetRegistry(NS)
         .then(function(accountRegistry){
             accountRegistry.update(account);
+        });
+}
+
+/**
+ * Update member data
+ * @param {com.daussho.koperasi.UpdateMemberData} updateMemberData
+ * @transaction
+ */
+
+function updateMemberData(newData){
+
+    var NS = 'com.daussho.koperasi.User';
+    var member = newData.user;
+
+    member.name = newData.name;
+    member.address = newData.address;
+    member.timeStamp = newData.timestamp;
+
+    return getParticipantRegistry(NS)
+        .then(function(participantRegistry){
+            participantRegistry.update(member);
         });
 }
