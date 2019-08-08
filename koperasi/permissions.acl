@@ -1,42 +1,21 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  * Sample access control list.
  */
-rule EverybodyCanReadEverything {
-    description: "Allow all participants read access to all resources"
-    participant: "com.daussho.koperasi.User"
-    operation: READ
+rule UserCanOnlyReadUpdateTheirData {
+    description: "User can only read and update their own data"
+    participant(user): "com.daussho.koperasi.User"
+    operation: READ, UPDATE
+    resource(acc): "com.daussho.koperasi.User"
+    condition: (user.getIdentifier() === acc.owner.getIdentifier())
+    action: ALLOW
+}
+
+rule OperatorRule {
+    description: "Allow Operastor to create, read and update"
+    participant(user): "com.daussho.koperasi.User"
+    operation: CREATE, UPDATE, READ
     resource: "com.daussho.koperasi.*"
-    action: ALLOW
-}
-
-rule EverybodyCanSubmitTransactions {
-    description: "Allow all participants to submit transactions"
-    participant: "com.daussho.koperasi.User"
-    operation: CREATE
-    resource: "com.daussho.koperasi.AccountTransaction"
-    action: ALLOW
-}
-
-rule OwnerHasFullAccessToTheirAssets {
-    description: "Allow all participants full access to their assets"
-    participant(p): "com.daussho.koperasi.User"
-    operation: ALL
-    resource(r): "com.daussho.koperasi.Account"
-    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    condition: (user.type === 'OPERATOR')
     action: ALLOW
 }
 
