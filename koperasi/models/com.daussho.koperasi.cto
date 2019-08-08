@@ -18,18 +18,36 @@
 
 namespace com.daussho.koperasi
 
+enum UserType {
+  o PETUGAS
+  o ANGGOTA
+}
+
+enum AccountType {
+  o TABUNGAN 
+  o PINJAMAN
+}
+
+enum TransactionType {
+  o SETOR
+  o TARIK
+  o PINJAM
+  o ANGSUR
+}
+
 participant User identified by userId {
   o String userId
   o String name
   o String address
-  o String type
+  o UserType type
 }
 
 asset Account identified by accountId {
   o String accountId
   --> User owner
   o Double balance
-  o String type
+  o AccountType type
+  o DateTime lastUpdate
 }
 
 transaction AccountTransaction {
@@ -37,5 +55,8 @@ transaction AccountTransaction {
   o Long txId
   o DateTime timeStamp
   o Double amount
-  o String type
+  o TransactionType type
+}
+
+transaction CreateDemoUser {
 }

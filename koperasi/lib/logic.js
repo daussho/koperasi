@@ -19,11 +19,42 @@
 
 /**
  * Account transaction
- * @param {com.daussho.koperasi.AccountTransaction} accountTransaction
+ * @param {com.daussho.koperasi.CreateDemoUser} createDemoUser
  * @transaction
  */
-async function savingTransaction(tx) {
-    tx.account.balance = tx.account.balance + tx.amount;
-    let assetRegistry = await getAssetRegistry('com.daussho.koperasi.Account');
-    await assetRegistry.update(tx.account);
+function createDemoUser(demoUser) {
+    
+    var factory = getFactory();
+    var NS = 'com.daussho.koperasi';
+
+    var userId = '0';
+    var accId = '0';
+    
+    // Create demo user for Anggota
+    var user = factory.newResource(NS, 'User', userId);
+    user.name = 'Demo User';
+    user.address = 'Jl. Ganesha No.10, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132';
+    user.type = 'ANGGOTA';
+
+    // Create account
+    var account = factory.newResource(NS, 'Account', accId);
+    account.owner = factory.newRelationship(NS, 'User', userId);
+    account.balance = 0;
+    account.type = 'TABUNGAN';
+    account.lastUpdate = demoUser.timestamp;
+
+    // Create transaction
+
+    // Commit change
+
+    return getParticipantRegistry(NS + '.User')
+        .then(function(userRegistry){
+            return userRegistry.addAll([user]);
+        })
+        .then(function(){
+            return getAssetRegistry(NS + '.Account');
+        })
+        .then(function(accountRegistry){
+            return accountRegistry.addAll([account]);
+        });
 }
