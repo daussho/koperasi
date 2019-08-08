@@ -4,6 +4,31 @@
 #
 
 ---
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
+Profiles:
+
+    ComposerOrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            ComposerConsortium:
+                Organizations:
+                    - *Org1
+    ComposerChannel:
+        Consortium: ComposerConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
 
 ################################################################################
 #
@@ -109,29 +134,3 @@ Application: &ApplicationDefaults
     # Organizations is the list of orgs which are defined as participants on
     # the application side of the network
     Organizations:
-
-################################################################################
-#
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
-################################################################################
-Profiles:
-
-    ComposerOrdererGenesis:
-        Orderer:
-            <<: *OrdererDefaults
-            Organizations:
-                - *OrdererOrg
-        Consortiums:
-            ComposerConsortium:
-                Organizations:
-                    - *Org1
-    ComposerChannel:
-        Consortium: ComposerConsortium
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Org1

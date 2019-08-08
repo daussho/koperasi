@@ -11,17 +11,17 @@ configtxgen -profile ComposerChannel -outputCreateChannelTx ./composer-channel.t
 ########################################################
 
 # Start fabric
-sudo FABRIC_VERSION="hlfv1" ./startFabric.sh 
+sudo FABRIC_VERSION="hlfv12" ./startFabric.sh 
 
 # Optional
-FABRIC_VERSION="hlfv1" ./createPeerAdminCard.sh
+FABRIC_VERSION="hlfv12" ./createPeerAdminCard.sh
 
 # Generate a business network archive
 composer archive create -t dir -n .
 
 # Deploying the business network
-composer network install --card PeerAdmin@hlfv1 --archiveFile  koperasi@0.0.1.bna
-composer network start --networkName koperasi --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+composer network install --card PeerAdmin@hlfv1 --archiveFile  koperasi@0.1.1.bna
+composer network start --networkName koperasi --networkVersion 0.1.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
 // composer card import --file networkadmin.card
 
 # Testing network

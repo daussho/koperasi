@@ -125,24 +125,3 @@ function accountTransaction(tx){
             accountRegistry.update(account);
         });
 }
-
-/**
- * Update member data
- * @param {com.daussho.koperasi.UpdateMemberData} updateMemberData
- * @transaction
- */
-
-function updateMemberData(newData){
-
-    var NS = 'com.daussho.koperasi.User';
-    var member = newData.user;
-
-    member.name = newData.name;
-    member.address = newData.address;
-    member.timeStamp = newData.timestamp;
-
-    return getParticipantRegistry(NS)
-        .then(function(participantRegistry){
-            participantRegistry.update(member);
-        });
-}

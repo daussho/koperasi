@@ -1,22 +1,37 @@
-/**
- * Sample access control list.
- */
 rule UserCanOnlyReadUpdateTheirData {
-    description: "User can only read and update their own data"
-    participant(user): "com.daussho.koperasi.User"
-    operation: READ, UPDATE
-    resource(acc): "com.daussho.koperasi.User"
-    condition: (user.getIdentifier() === acc.owner.getIdentifier())
-    action: ALLOW
+  description: "User can only read and update their own data"
+  participant(user): "com.daussho.koperasi.User"
+  operation: READ, UPDATE
+  resource(r): "com.daussho.koperasi.User"
+  condition: (user.getIdentifier() === r.getIdentifier())
+  action: ALLOW
+}
+
+rule UserCanOnlyReadTheirAccount {
+  description: "User can only read their account"
+  participant(user): "com.daussho.koperasi.User"
+  operation: READ
+  resource(r): "com.daussho.koperasi.Account"
+  condition: (user.getIdentifier() === r.owner.getIdentifier())
+  action: ALLOW
+}
+
+rule UserCantCreateTransaction {
+  description: "User can't create transaction"
+  participant(u): "com.daussho.koperasi.User"
+  operation: ALL
+  resource: "com.daussho.koperasi.*"
+  condition: (u.type === 'MEMBER')
+  action: DENY
 }
 
 rule OperatorRule {
-    description: "Allow Operastor to create, read and update"
-    participant(user): "com.daussho.koperasi.User"
-    operation: CREATE, UPDATE, READ
-    resource: "com.daussho.koperasi.*"
-    condition: (user.type === 'OPERATOR')
-    action: ALLOW
+  description: "Allow Operastor to create, read and update"
+  participant(user): "com.daussho.koperasi.User"
+  operation: CREATE, UPDATE, READ
+  resource: "com.daussho.koperasi.*"
+  condition: (user.type === 'OPERATOR')
+  action: ALLOW
 }
 
 rule SystemACL {
@@ -28,17 +43,17 @@ rule SystemACL {
 }
 
 rule NetworkAdminUser {
-    description: "Grant business network administrators full access to user resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "**"
-    action: ALLOW
+  description: "Grant business network administrators full access to user resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "**"
+  action: ALLOW
 }
 
 rule NetworkAdminSystem {
-    description: "Grant business network administrators full access to system resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "org.hyperledger.composer.system.**"
-    action: ALLOW
+  description: "Grant business network administrators full access to system resources"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }

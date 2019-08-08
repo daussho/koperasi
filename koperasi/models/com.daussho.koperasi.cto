@@ -40,7 +40,6 @@ asset Account identified by accountId {
 
 transaction AccountTransaction {
   --> Account account
-  o DateTime timeStamp
   o Double amount
   o TransactionType type
 }
@@ -50,12 +49,6 @@ transaction CreateDemoUser {
 
 transaction CreateNewMember {
   o String userId
-  o String name
-  o String address
-}
-
-transaction UpdateMemberData {
-  --> User user
   o String name
   o String address
 }

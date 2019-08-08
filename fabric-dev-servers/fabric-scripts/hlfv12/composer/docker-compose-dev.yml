@@ -9,7 +9,7 @@ services:
 
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/95b787ca61e5739539a72f718099e37fafc0b2280111bd991f38c7c924640a55_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/19ab65abbb04807dad12e4c0a9aaa6649e70868e3abd0217a322d89e47e1a6ae_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca.org1.example.com
@@ -50,6 +50,8 @@ services:
     command: peer node start --peer-chaincodedev=true
     ports:
       - 7051:7051
+      - 7052:7052
+      - 7053:7053
     volumes:
         - /var/run/:/host/var/run/
         - ./:/etc/hyperledger/configtx
@@ -58,7 +60,7 @@ services:
     depends_on:
       - orderer.example.com
       - couchdb
-  
+
   couchdb:
     container_name: couchdb
     image: hyperledger/fabric-couchdb:0.4.10

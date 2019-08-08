@@ -3,7 +3,7 @@
     "composer": "^0.20.8"
   },
   "name": "koperasi",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Koperasi simpan pinjam",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/koperasi.bna",
