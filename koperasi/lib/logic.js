@@ -25,17 +25,15 @@ function createNewMember(newUser){
     user.timeStamp = newUser.timestamp;
 
     // Create saving account
-    var account1 = factory.newResource(NS, 'Account', savingId);
+    var account1 = factory.newResource(NS, 'SavingAccount', savingId);
     account1.owner = factory.newRelationship(NS, 'User', userId);
     account1.balance = 0;
-    account1.type = 'SAVING';
     account1.lastUpdate = newUser.timestamp;
 
     // Create loan account
-    var account2 = factory.newResource(NS, 'Account', loanId);
+    var account2 = factory.newResource(NS, 'LoanAccount', loanId);
     account2.owner = factory.newRelationship(NS, 'User', userId);
-    account2.balance = 0;
-    account2.type = 'LOAN';
+    account2.debt = 0;
     account2.lastUpdate = newUser.timestamp;
 
     // Commit change
@@ -45,11 +43,17 @@ function createNewMember(newUser){
             return userRegistry.addAll([user]);
         })
         .then(function(){
-            return getAssetRegistry(NS + '.Account');
+            return getAssetRegistry(NS + '.SavingAccount');
         })
-        .then(function(accountRegistry){
-            return accountRegistry.addAll([account1, account2]);
-        });
+        .then(function(savingRegistry){
+            return savingRegistry.addAll([account1]);
+        })
+        .then(function(){
+            return getAssetRegistry(NS + '.LoanAccount');
+        })
+        .then(function(loanRegistry){
+            return loanRegistry.addAll([account2]);
+        })
 }
 
 /**
@@ -72,50 +76,61 @@ function createDemoUser(demoUser) {
 }
 
 /**
- * Create a account transaction
- * @param {com.daussho.koperasi.AccountTransaction} accountTransaction
+ * Create a saving transaction
+ * @param {com.daussho.koperasi.SavingTransaction} savingTransaction
  * @transaction
  */
 
-function accountTransaction(tx){
+function savingTransaction(tx){
 
-    var NS = 'com.daussho.koperasi.Account';
+    var NS = 'com.daussho.koperasi.SavingAccount';
     var account = tx.account;
 
-    // Check if account is TABUNGAN
-    if (account.type === 'SAVING'){
-        if (tx.type === 'DEPOSIT'){ //Check if transaction is SETOR
-            // Check tx amount
-            if (tx.amount <= 0){
-                throw new Error('Amount is zero or less');
-            }
-    
-            // Add new transaction to account
-            if (account.accountTransaction){
-                account.accountTransaction.push(tx);
-                account.balance += tx.amount;
-            } else {
-                account.accountTransaction = [tx];
-                account.balance = tx.amount;
-            }
-            account.lastUpdate = tx.timestamp;
-    
-        } else if (tx.type === 'WITHDRAWAL'){ // Check if transaction is TARIK
-            // Check tx amount
-            if (tx.amount >= 0){
-                throw new Error('Amount is zero or more');
-            }
-    
-            // Check end balance
-            if (account.balance + tx.amount < 0){
-                throw new Error('Ending balance is less than zero');
-            } else {
-                account.accountTransaction.push(tx);
-                account.balance += tx.amount;
-            }
-            account.lastUpdate = tx.timestamp;
+    // Check if transaction is withdrawal
+    if (tx.type === 'WITHDRAWAL'){ 
+        // Check tx amount
+        if (tx.amount >= 0){
+            throw new Error('Amount is zero or more');
         }
-    } else if (account.type === 'LOAN'){
+
+        // Check end balance
+        if (account.balance + tx.amount < 0){
+            throw new Error('Ending balance is less than zero');
+        } else {
+            account.accountTransaction.push(tx);
+            account.balance += tx.amount;
+        }
+        account.lastUpdate = tx.timestamp;
+    } else { //Check if transaction is deposit
+        // Check if have match deposit type
+        switch(tx.type) {
+            case 'MAIN':
+                account.lastMainSaving = tx.timestamp;
+                break;
+            case 'MANDATORY':
+                account.lastMandatorySaving = tx.timestamp;
+                break;
+            case 'VOLUNTARY':
+                account.lastVoluntarySaving = tx.timestamp;
+                break;
+            default:
+                throw new Error('Deposit type not found!');
+        }
+          
+        // Check tx amount
+        if (tx.amount <= 0){
+            throw new Error('Amount is zero or less');
+        }
+
+        // Add new transaction to account
+        if (account.accountTransaction){
+            account.accountTransaction.push(tx);
+            account.balance += tx.amount;
+        } else {
+            account.accountTransaction = [tx];
+            account.balance = tx.amount;
+        }
+        account.lastUpdate = tx.timestamp;
 
     }
     

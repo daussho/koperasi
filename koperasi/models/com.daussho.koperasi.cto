@@ -14,11 +14,16 @@ enum AccountType {
   o LOAN
 }
 
-enum TransactionType {
-  o DEPOSIT
-  o WITHDRAWAL
+enum LoanType {
   o LOAN
   o INSTALLMENT
+}
+
+enum SavingType {
+  o MAIN
+  o MANDATORY
+  o VOLUNTARY
+  o WITHDRAWAL
 }
 
 participant User identified by userId {
@@ -29,19 +34,35 @@ participant User identified by userId {
   o DateTime timeStamp
 }
 
-asset Account identified by accountId {
+asset SavingAccount identified by accountId {
   o String accountId
   --> User owner
   o Double balance
-  o AccountType type
+  o DateTime lastMainSaving optional
+  o DateTime lastMandatorySaving optional
+  o DateTime lastVoluntarySaving optional
   o DateTime lastUpdate
-  o AccountTransaction[] accountTransaction optional
+  o SavingTransaction[] accountTransaction optional
 }
 
-transaction AccountTransaction {
-  --> Account account
+asset LoanAccount identified by accountId {
+  o String accountId
+  --> User owner
+  o Double debt
+  o DateTime lastUpdate
+  o SavingTransaction[] accountTransaction optional
+}
+
+transaction SavingTransaction {
+  --> SavingAccount account
   o Double amount
-  o TransactionType type
+  o SavingType type
+}
+
+transaction LoanTransaction {
+  --> LoanAccount account
+  o Double amount
+  o LoanType type
 }
 
 transaction CreateDemoUser {

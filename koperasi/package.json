@@ -32,5 +32,9 @@
     "nyc": "latest",
     "mkdirp": "latest",
     "mocha": "latest"
+  },
+  "dependencies": {
+    "loopback-connector-mongodb": "^5.0.0",
+    "passport-google-oauth2": "^0.2.0"
   }
 }
