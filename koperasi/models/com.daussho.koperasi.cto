@@ -16,7 +16,7 @@ enum AccountType {
 
 enum LoanType {
   o LOAN
-  o INSTALLMENT
+  o PAYMENT
 }
 
 enum SavingType {
@@ -50,7 +50,7 @@ asset LoanAccount identified by accountId {
   --> User owner
   o Double debt
   o DateTime lastUpdate
-  o SavingTransaction[] accountTransaction optional
+  o LoanTransaction[] accountTransaction optional
 }
 
 transaction SavingTransaction {
@@ -61,6 +61,7 @@ transaction SavingTransaction {
 
 transaction LoanTransaction {
   --> LoanAccount account
+  --> SavingAccount savingAccount optional
   o Double amount
   o LoanType type
 }

@@ -140,3 +140,74 @@ function savingTransaction(tx){
             accountRegistry.update(account);
         });
 }
+
+/**
+ * Create a loan transaction
+ * @param {com.daussho.koperasi.LoanTransaction} loanTransaction
+ * @transaction
+ */
+
+function loanTransaction(tx){
+    
+    var NS = 'com.daussho.koperasi.LoanAccount';
+    var account = tx.account;
+    var maxLoan = 1.25;
+    var accountAge = 10;
+
+    // Check if transaction is create loan
+    if (tx.type === 'LOAN'){
+        if (account.debt > 0) {
+            throw new Error('You have unpaid debt!');
+        }
+
+        // Check account age
+        var x = monthDiff(new Date(account.owner.timeStamp), new Date());
+        if (x < accountAge){
+            throw new Error('Account less than 10 months');
+        }
+
+        // Check saving account
+        if (tx.savingAccount == null){
+            throw new Error('Saving account not found!');
+        }
+
+        // Check loan amount
+        if (tx.amount < 0){
+            throw new Error('Loan must bigger than zero!');
+        }
+        
+        // Check submitted loan amount
+        var loan = tx.savingAccount.balance * maxLoan;
+        if (tx.amount > loan){
+            throw new Error('Loan is too big!');
+        }
+
+        // Add new transaction to account
+        if (account.accountTransaction){
+            account.accountTransaction.push(tx);
+        } else {
+            account.accountTransaction = [tx];
+        }
+        account.debt = tx.amount;
+        account.lastUpdate = tx.timestamp;
+
+        // Commit change
+        return getAssetRegistry(NS)
+            .then(function(accountRegistry){
+                accountRegistry.update(account);
+            });
+    }
+}
+
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+
+    var dateDiff = d2.getDate() - d1.getDate();
+    if (dateDiff < 0){
+        months--;
+    }
+    return months;
+}
