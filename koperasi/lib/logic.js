@@ -153,6 +153,7 @@ function loanTransaction(tx){
     var account = tx.account;
     var maxLoan = 1.25;
     var accountAge = 10;
+    var fineFactor = 0.01;
 
     // Check if transaction is create loan
     if (tx.type === 'LOAN'){
@@ -182,6 +183,11 @@ function loanTransaction(tx){
             throw new Error('Loan is too big!');
         }
 
+        // Check loan period
+        if (tx.period <= 0){
+            throw new Error('Period must be greater than zero!');
+        }
+
         // Add new transaction to account
         if (account.accountTransaction){
             account.accountTransaction.push(tx);
@@ -189,14 +195,50 @@ function loanTransaction(tx){
             account.accountTransaction = [tx];
         }
         account.debt = tx.amount;
+        account.period = tx.period;
+        account.installment = tx.amount/tx.period;
         account.lastUpdate = tx.timestamp;
+    } else if(tx.type === 'PAYMENT'){
+        
+        var diff = (new Date() - new Date(account.lastUpdate))/(1000 * 60 * 60 * 24);
+        var fine = 0;
+        
+        // Check if last payment is past 7 days
+        if (diff > 7){
+            fine = account.debt*fineFactor;
+        }
+        console.log(fine);
 
-        // Commit change
-        return getAssetRegistry(NS)
-            .then(function(accountRegistry){
-                accountRegistry.update(account);
-            });
+        if (tx.amount > 0){
+            throw new Error('Amount must less than zero!');
+        }
+
+        var total = account.installment + fine;
+        if (-1*tx.amount < total){
+            throw new Error('Payment amount not enough! You must pay Rp '+ total);
+        }
+
+        if (((tx.amount + fine) + account.debt) < 0){
+            throw new Error('Payment amount too much!');
+        }
+
+        account.accountTransaction.push(tx);
+        account.debt += tx.amount + fine;
+        account.period--;
+
+        if (account.period == 0){
+            account.installment = 0;
+        } else {
+            account.installment = account.debt/account.period;
+        }
+        account.lastUpdate = tx.timestamp;        
     }
+
+    // Commit change
+    return getAssetRegistry(NS)
+    .then(function(accountRegistry){
+        accountRegistry.update(account);
+    });
 }
 
 function monthDiff(d1, d2) {

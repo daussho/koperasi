@@ -49,6 +49,8 @@ asset LoanAccount identified by accountId {
   o String accountId
   --> User owner
   o Double debt
+  o Integer period optional
+  o Double installment optional
   o DateTime lastUpdate
   o LoanTransaction[] accountTransaction optional
 }
@@ -63,6 +65,7 @@ transaction LoanTransaction {
   --> LoanAccount account
   --> SavingAccount savingAccount optional
   o Double amount
+  o Integer period optional
   o LoanType type
 }
 
