@@ -1,0 +1,26 @@
+COMPOSER_CARD=restadmin@koperasi
+COMPOSER_NAMESPACES=never
+COMPOSER_AUTHENTICATION=true
+COMPOSER_MULTIUSER=true
+COMPOSER_PROVIDERS='{
+    "google": {
+        "provider": "google",
+        "module": "passport-google-oauth2",
+        "clientID": "295609582290-ubn2lme6rc9tbom6ijsdt19ctp4s0qnl.apps.googleusercontent.com",
+        "clientSecret": "6BFHAXS9T4SFxF3AQ8_NysG4",
+        "authPath": "/auth/google",
+        "callbackURL": "/auth/google/callback",
+        "scope": "https://www.googleapis.com/auth/plus.login",
+        "successRedirect": "/",
+        "failureRedirect": "/"
+    }
+}'
+COMPOSER_DATASOURCES='{ 
+    "db": { 
+        "name": "db", 
+        "url": "mongodb://test:test@cluster0-shard-00-00-lojmr.mongodb.net:27017,cluster0-shard-00-01-lojmr.mongodb.net:27017,cluster0-shard-00-02-lojmr.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority", 
+        "port": 27017, 
+        "database": "restauth", 
+        "connector": "mongodb" 
+    } 
+}'
