@@ -46,14 +46,21 @@
 	composer network ping -c restadmin@koperasi
 
 # Generating a REST server
-	composer-rest-server
-	composer-rest-server -c restadmin@koperasi -n never -a true -m true -u true -w true
+	sed -e 's/localhost:7051/peer0.org1.example.com:7051/' -e 's/localhost:7053/peer0.org1.example.com:7053/' -e 's/localhost:7054/ca.org1.example.com:7054/'  -e 's/localhost:7050/orderer.example.com:7050/'  < $HOME/.composer/cards/restadmin@koperasi/connection.json  > /tmp/connection.json && cp -p /tmp/connection.json $HOME/.composer/cards/restadmin@koperasi/
 
-- Enter **admin@koperasi** as the card name.
-- Select never use namespaces when asked whether to use namespaces in the generated API.
-- Select No when asked whether to secure the generated API.
-- Select Yes when asked whether to enable event publication.
-- Select No when asked whether to enable TLS security.
+	sudo docker run \
+	-d \
+	-e COMPOSER_CARD=${COMPOSER_CARD} \
+	-e COMPOSER_NAMESPACES=${COMPOSER_NAMESPACES} \
+	-e COMPOSER_AUTHENTICATION=${COMPOSER_AUTHENTICATION} \
+	-e COMPOSER_MULTIUSER=${COMPOSER_MULTIUSER} \
+	-e COMPOSER_PROVIDERS="${COMPOSER_PROVIDERS}" \
+	-e COMPOSER_DATASOURCES="${COMPOSER_DATASOURCES}" \
+	-v ~/.composer:/home/composer/.composer \
+	--name rest \
+	--network composer_default \
+	-p 3000:3000 \
+	myorg/composer-rest-server 
 
 # Stop fabric
 	sudo FABRIC_VERSION="hlfv12" ./stopFabric.sh
