@@ -101,7 +101,9 @@ cat << EOF > DevServer_connection.json
             ],
             "peers": {
                 "peer0.org1.example.com": {},
-                "peer1.org1.example.com": {}
+                "peer1.org1.example.com": {},
+                "peer2.org1.example.com": {},
+                "peer3.org1.example.com": {}
             }
         }
     },
@@ -110,7 +112,9 @@ cat << EOF > DevServer_connection.json
             "mspid": "Org1MSP",
             "peers": [
                 "peer0.org1.example.com",
-                "peer1.org1.example.com"
+                "peer1.org1.example.com",
+                "peer2.org1.example.com",
+                "peer3.org1.example.com"
             ],
             "certificateAuthorities": [
                 "ca.org1.example.com"
@@ -128,6 +132,12 @@ cat << EOF > DevServer_connection.json
         },
         "peer1.org1.example.com": {
             "url": "grpc://${HOST}:8051"
+        },
+        "peer2.org1.example.com": {
+            "url": "grpc://${HOST}:9051"
+        },
+        "peer3.org1.example.com": {
+            "url": "grpc://${HOST}:10051"
         }
     },
     "certificateAuthorities": {
@@ -139,7 +149,7 @@ cat << EOF > DevServer_connection.json
 }
 EOF
 
-PRIVATE_KEY="${DIR}"/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/97977572bc2751c1f1ef34f937306dbe10c1ea835de8a114cfff6830afc399f3_sk
+PRIVATE_KEY="${DIR}"/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/4cd79873dbe4715f3adfc16da3826aa0010a57326c3f3280167b7ef83322112e_sk
 CERT="${DIR}"/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
 
 if [ "${NOIMPORT}" != "true" ]; then

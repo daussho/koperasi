@@ -23,7 +23,9 @@
             ],
             "peers": {
                 "peer0.org1.example.com": {},
-                "peer1.org1.example.com": {}
+                "peer1.org1.example.com": {},
+                "peer2.org1.example.com": {},
+                "peer3.org1.example.com": {}
             }
         }
     },
@@ -32,7 +34,9 @@
             "mspid": "Org1MSP",
             "peers": [
                 "peer0.org1.example.com",
-                "peer1.org1.example.com"
+                "peer1.org1.example.com",
+                "peer2.org1.example.com",
+                "peer3.org1.example.com"
             ],
             "certificateAuthorities": [
                 "ca.org1.example.com"
@@ -50,6 +54,12 @@
         },
         "peer1.org1.example.com": {
             "url": "grpc://localhost:8051"
+        },
+        "peer2.org1.example.com": {
+            "url": "grpc://localhost:9051"
+        },
+        "peer3.org1.example.com": {
+            "url": "grpc://localhost:10051"
         }
     },
     "certificateAuthorities": {
